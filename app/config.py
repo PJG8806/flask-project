@@ -1,16 +1,21 @@
 import os
-from dotenv import load_dotenv # 읽어올수 없는 파일을 읽어온다
+from dotenv import load_dotenv
 
 load_dotenv()
 
 class Config:
-    TURSO_DATABASE_URL = os.getenv("TURSO_DATABASE_URL") # dotenv에 키값이 있다면 가져온다
+    TURSO_DATABASE_URL = os.getenv("TURSO_DATABASE_URL")
     TURSO_AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN")
 
-    if not TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
+    print(TURSO_AUTH_TOKEN)
+    print(TURSO_DATABASE_URL)
+
+    if TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
         # .env에 값이 있을 시에만 Turso를 사용하도록 설정
         SQLALCHEMY_DATABASE_URI = f"sqlite+{TURSO_DATABASE_URL}?secure=true"
         CONNECT_ARGS = {"auth_token": TURSO_AUTH_TOKEN}
+
+        print("클라우드 연결")
     else:
         # Turso 정보가 없거나 에러가 발생한다면 로컬 db를 사용하도록 설정
         print("\n[INFO] No Turso Setup: Use local db...\n")
